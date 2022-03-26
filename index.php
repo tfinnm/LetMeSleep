@@ -46,8 +46,9 @@ if (empty($_GET)) {
 			<option value='1200'>12:00 PM</option>
 			<option value='1300'>1:00 PM</option>
 		</select>
+		<label style='color: #B9975B'><input type='checkbox' name='prereq' id='prereq' value='1'> Avoid Pre-Reqs</label>
 		<br>
-		<input class='form-control' type='submit' style='width:50%' value='Generate Schedule'/>
+		<input class='form-control' type='submit' style='width:50%; color: #115740;' value='Generate Schedule'/>
 	</form>
 	</center>
 	";
@@ -56,6 +57,35 @@ if (empty($_GET)) {
 require('libraries/fpdf/fpdf.php');
 
 class PDF extends FPDF {
+	
+	function Header() {
+		if (!isset($_GET["watermark"])) {
+			$this->SetFont('Arial','B',100);
+			$this->SetTextColor(255,192,203);
+			$this->Rotate(45,2.0405,7.7095);
+			$this->Text(2.0405,7.7095,'UNOFFICIAL');
+			$this->Rotate(0);
+		}
+	}
+
+	var $angle=0;
+	function Rotate($angle,$x=-1,$y=-1) {
+		if($x==-1)
+			$x=$this->x;
+		if($y==-1)
+			$y=$this->y;
+		if($this->angle!=0)
+			$this->_out('Q');
+		$this->angle=$angle;
+		if($angle!=0) {
+			$angle*=M_PI/180;
+			$c=cos($angle);
+			$s=sin($angle);
+			$cx=$x*$this->k;
+			$cy=($this->h-$y)*$this->k;
+			$this->_out(sprintf('q %.5F %.5F %.5F %.5F %.2F %.2F cm 1 0 0 1 %.2F %.2F cm',$c,$s,-$s,$c,$cx,$cy,-$cx,-$cy));
+		}
+	}
 
 	function Footer() {
 		$this->SetY(-0.5,true);
@@ -72,7 +102,7 @@ date_default_timezone_set('America/New_York');
 
 $pdf = new PDF('P','in','Letter');
 $pdf->AliasNbPages();
-$pdf->SetTitle('Let Me Sleep: '.date("m/d/Y"));
+$pdf->SetTitle('Let Me Sleep: '.$_GET["name"]);
 $pdf->SetAuthor('LetMeSleep');
 $pdf->SetSubject('No more early morning classes.');
 $pdf->SetCreator('LetMeSleep v1.0.0/FPDF 1.84');
@@ -110,8 +140,17 @@ function generateSched($pdf) {
 			if ($course->{'OPEN_CLOSED'} == "OPEN" && $course->{'CRS_DAYTIME'} != "Not Available") {
 				if (str_contains($course->{'CRS_LEVL'}, $level)) {
 					if (explode("-", explode(":", $course->{'CRS_DAYTIME'})[1])[0] >= $time) {
-						$found = true;
-						$selected_courses["$sub"][] = $course;
+						if (isset($_GET["prereq"])) {
+							$prereqData = getData("https://openapi.it.wm.edu/courses/production/v2/coursesections/".$term."/".$course->{'CRN_ID'}, "", "GET", $token);
+							$prereqData = json_decode($prereqData);
+							if($prereqData->{'PREREQ'} == '') {
+								$found = true;
+								$selected_courses["$sub"][] = $course;
+							}
+						} else {
+							$found = true;
+							$selected_courses["$sub"][] = $course;
+						}
 					}
 				}
 			}
@@ -120,7 +159,6 @@ function generateSched($pdf) {
 			$warnings[] = "No Courses Found For ".$sub;
 		}
 	}
-	//var_dump($selected_courses);
 	$pdf->AddPage();
 	//content of schedule goes here
 	$pdf->SetTextColor(255,0,0);
@@ -133,16 +171,41 @@ function generateSched($pdf) {
 	foreach ($selected_courses as $sub) {
 		$sc = array();
 		foreach ($sub as $course) {
-			$sc[] = array("Name"=>$course->{'TITLE'}, "ID"=>$course->{'CRN_ID'}, "Subject"=>$course->{'SUBJECT_CODE'}, "Time"=>$course->{'CRS_DAYTIME'}, "Credits"=>$course->{'CREDIT_HRS'}, "Instructor"=>$course->{'INSTRUCTOR'});
+			$sc[] = array("Name"=>$course->{'TITLE'}, "ID"=>$course->{'CRN_ID'}, "ID2"=>$course->{'COURSE_ID'}, "Subject"=>$course->{'SUBJECT_CODE'}, "Time"=>$course->{'CRS_DAYTIME'}, "Credits"=>$course->{'CREDIT_HRS'}, "Instructor"=>$course->{'INSTRUCTOR'});
 		}
 		$selected[] = $sc;
 	}
 	$selected = selectFinal(null,$selected);
+	$selected = enrich($selected, $term, $token);
+	$pdf->SetFont('Arial','B',24);
+	$pdf->Cell(0,0.25,'Course Schedule',"L",1);
+	$pdf->ln();
+	$pdf->SetFont('Arial','B',8);
 	outputDay($selected, "Monday", "M", $pdf);
 	outputDay($selected, "Tuesday", "T", $pdf);
 	outputDay($selected, "Wensday", "W", $pdf);
 	outputDay($selected, "Thursday", "R", $pdf);
 	outputDay($selected, "Friday", "F", $pdf);
+	$pdf->AddPage();
+	$pdf->SetFont('Arial','B',24);
+	$pdf->Cell(0,0.25,'Course Info',"L",1);
+	$pdf->ln();
+	$pdf->SetFont('Arial','B',8);
+	outputDesc($selected, $pdf);
+}
+
+function enrich($input, $term, $token) {
+	$output = array();
+	foreach ($input as $course) {
+		$courseData = getData("https://openapi.it.wm.edu/courses/production/v2/coursesections/".$term."/".$course["ID"], "", "GET", $token);
+		$courseData = json_decode($courseData);	
+		$course["desc"] = $courseData->{'COURSEDESC'}[0][0];
+		$course["bldg"] = $courseData->{'CRSMEET'}[0]->{'building'};
+		$course["room"] = $courseData->{'CRSMEET'}[0]->{'room'};
+		$course["prereq"] = $courseData->{'PREREQ'};
+		$output[] = $course;
+	}
+	return $output;
 }
 
 function selectFinal ($options,$remaining,$selected = array()) {
@@ -186,6 +249,81 @@ function isConflicting($course, $selected) {
 	}
 	return false;
 }
+function formatTime($input, $includeDates = false) {
+	$output = "";
+	$td = explode(":", $input);
+	$times = explode("-", $td[1]);
+	$startTime = convertTime($times[0]);
+	$endTime = convertTime($times[1], true);
+	if ($includeDates) {
+		$dates = $td[0];
+		foreach (str_split($dates) as $date) {
+			$add = "";
+			Switch ($date) {
+				case "M":
+					$add = "Mon. ";
+					break;
+				case "T":
+					$add = "Tues. ";
+					break;
+				case "W":
+					$add = "Wed. ";
+					break;
+				case "R":
+					$add = "Thurs. ";
+					break;
+				case "F":
+					$add = "Fri. ";
+					break;
+			}
+			$output .= $add;
+		}
+	}
+	$output .= $startTime."-".$endTime;
+	return $output;
+}
+
+function convertTime($input, $includeAmPm = false) {
+	$ampm = " AM";
+	$parts = str_split($input,2);
+	if ($parts[0] > 11) {
+		$ampm = " PM";
+		if ($parts[0] > 12) {
+			$parts[0] -= 12;
+		}
+	}
+	if (!$includeAmPm) {
+		$ampm = "";
+	}
+	return $parts[0].":".$parts[1].$ampm;
+}
+	
+function outputDesc($courses, $pdf) {
+	$found = false;
+	foreach ($courses as $course) {
+		$pdf->SetFont('Arial','BU',12);
+		$pdf->Cell(0,0.25,$course['Name'],0,1);
+		$pdf->SetFont('Arial','B',8);
+		$found = true;
+		$pdf->SetFont('Arial','',8);
+		$pdf->Cell(0,0.25,"Taught By ".$course['Instructor'],0);
+		$pdf->Cell(0,0.25,$course['Credits']." Credits",0,1,"R");
+		$pdf->Cell(0,0.25,"Course ID: ".$course['ID2'],0,0);
+		$pdf->Cell(0,0.25,$course['ID'],0,1,"R");
+		$pdf->MultiCell(0,0.2,$course['desc'],0,"L");
+		$pdf->SetFont('Arial','B',8);
+		$pdf->Cell(0,0.25,$course['bldg']." ".$course['room']." ".formatTime($course['Time'],true),0,1);
+		$pdf->SetFont('Arial','',8);
+		$pdf->Cell(0,0.25,"Pre-Reqs: ".$course['prereq'],0,1);
+		$pdf->SetFont('Arial','B',8);
+	}
+	if (!$found) {
+		$pdf->SetTextColor(255,0,0);
+		$pdf->Cell(0,0.25,"No courses scheduled.",0,1);
+		$pdf->SetTextColor(0,0,0);
+	}	
+}
+
 function outputDay($courses, $dayTitle, $day, $pdf) {
 	$found = false;
 	$pdf->SetFont('Arial','BU',12);
@@ -200,7 +338,10 @@ function outputDay($courses, $dayTitle, $day, $pdf) {
 		$days = explode(":", $course['Time'])[0];
 		if (str_contains($days, $day)) {
 			$found = true;
-			$pdf->Cell(0,0.25,$course['Name']." [".$course['Time']."]",0,1);
+			$pdf->Cell(0,0.25,$course['Name']." [".formatTime($course['Time'])."]",0,1);
+			$pdf->SetFont('Arial','',8);
+			$pdf->Cell(0,0.25,$course['bldg']." ".$course['room'],0,1);
+			$pdf->SetFont('Arial','B',8);
 		}
 	}
 	if (!$found) {
