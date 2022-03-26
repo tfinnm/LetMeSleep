@@ -147,7 +147,12 @@ function generateSched($pdf) {
 
 function selectFinal ($options,$remaining,$selected = array()) {
 	if ($options != null) {
-		$selected[] = $options[0];
+		foreach ($options as $option) {
+			if (!isConflicting($option, $selected)) {
+				$selected[] = $option;
+				break;
+			}
+		}
 	}
 	if (is_array($remaining) && (count($remaining) > 1)) {
 		$options = $remaining[0];
@@ -159,7 +164,28 @@ function selectFinal ($options,$remaining,$selected = array()) {
 	}
 	return $selected;
 }
-
+function isConflicting($course, $selected) {
+	foreach (str_split(explode(":", $course['Time'])[0]) as $day) {
+		foreach ($selected as $select) {
+			if (in_array($day, str_split(explode(":", $select['Time'])[0]))) {
+				$selstart = explode("-", explode(":", $select['Time'])[1])[0];
+				$selend = explode("-", explode(":", $select['Time'])[1])[1];
+				$courstart = explode("-", explode(":", $course['Time'])[1])[0];
+				$courend = explode("-", explode(":", $course['Time'])[1])[1];
+				if ($courstart <= $selend && $courstart >= $selstart) {
+					return true;
+				}
+				if ($courend <= $selend && $courend >= $selstart) {
+					return true;
+				}
+				if ($courstart <= $selstart && $courend >= $selend) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
 function outputDay($courses, $dayTitle, $day, $pdf) {
 	$found = false;
 	$pdf->SetFont('Arial','BU',12);
