@@ -1,35 +1,70 @@
 <?php
+polyfill();
+if (empty($_GET)) {
+	echo "<meta charset=\"utf-8\">
+			<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+			<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css\">
+			<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js\"></script>
+			<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js\"></script>
+			<title>Let Me Sleep - Course Schedule Generator</title>
+	<form action=\"\" method=\"get\"><br><br>
+		<center><img src='inline.jpg'><br><br><h1 style='color: #115740'>Let Me Sleep</h1><h3 style='color: #B9975B'>Course Schedule Optimization For Night Owls At W&M</h3>
+		<label style='color: #115740' for='name'>Name: (Your Name)</label>
+		<input class='form-control' type='text' name='name' id='name' style='width:50%' required></input>
+		<label style='color: #115740' for='term'>Term: (Select One)</label>
+		<select class='form-control' name='term' id='term' style='width:50%' required>";
+		$token = login();
+		$terms = getData("https://openapi.it.wm.edu/courses/production/v1/activeterms", "", "GET", $token);
+		$terms = json_decode($terms);
+		foreach ($terms as $term) {
+			echo "<option value='".$term->{'TERM_CODE'}."'>".$term->{'TERM_DESC'}."</option>";
+		}
+		echo "</select>
+		<label style='color: #115740' for='subject'>Subjects: (Select All That Apply)</label>
+		<select class='form-control' name='subject[]' id='subject' style='width:50%' multiple required>";
+		$terms = getData("https://openapi.it.wm.edu/courses/production/v1/subjectlist", "", "GET", $token);
+		$terms = json_decode($terms);
+		foreach ($terms as $term) {
+			echo "<option value='".$term->{'STVSUBJ_CODE'}."'>".$term->{'STVSUBJ_DESC'}." [".$term->{'STVSUBJ_CODE'}."]</option>";
+		}
+		echo "</select>
+		<label style='color: #115740' for='level'>Level: (Select One)</label>
+		<select class='form-control' name='level' id='level' style='width:50%' required>
+			<option value='UG'>Undergraduate</option>
+			<option value='GA'>Graduate - Arts & Sciences</option>
+			<option value='GB'>Graduate - Business</option>
+			<option value='GE'>Graduate - Education</option>
+			<option value='GM'>Graduate - Marine Science</option>
+			<option value='LW'>Law</option>
+		</select>
+		<label style='color: #115740' for='time'>Earliest Start Time: (Select One)</label>
+		<select class='form-control' name='time' id='time' style='width:50%' required>
+			<option value='0800'>8:00 AM</option>
+			<option value='0900'>9:00 AM</option>
+			<option value='1000'>10:00 AM</option>
+			<option value='1100'>11:00 AM</option>
+			<option value='1200'>12:00 PM</option>
+			<option value='1300'>1:00 PM</option>
+		</select>
+		<br>
+		<input class='form-control' type='submit' style='width:50%' value='Generate Schedule'/>
+	</form>
+	</center>
+	";
+} else {
+
 require('libraries/fpdf/fpdf.php');
 
 class PDF extends FPDF {
 
-	var $angle=0;
-	function Rotate($angle,$x=-1,$y=-1) {
-		if($x==-1)
-			$x=$this->x;
-		if($y==-1)
-			$y=$this->y;
-		if($this->angle!=0)
-			$this->_out('Q');
-		$this->angle=$angle;
-		if($angle!=0) {
-			$angle*=M_PI/180;
-			$c=cos($angle);
-			$s=sin($angle);
-			$cx=$x*$this->k;
-			$cy=($this->h-$y)*$this->k;
-			$this->_out(sprintf('q %.5F %.5F %.5F %.5F %.2F %.2F cm 1 0 0 1 %.2F %.2F cm',$c,$s,-$s,$c,$cx,$cy,-$cx,-$cy));
-		}
-	}
-
 	function Footer() {
 		$this->SetY(-0.5,true);
 		$this->SetFont('Arial','I',8);
-		$this->Image('WM.png',0.5,10,0.5);
+		$this->Image('WM.png',0.35,10.25,0.5);
 		$this->Cell(0,0.25,'LET ME SLEEP',0,0,'L');
 		$this->SetX(0);
 		$this->Cell(0,0.25,'Page '.$this->PageNo().'/{nb}',0,0,'C');
-		$this->Cell(0,0.25,'Generated '.date("m/d/Y H:i:s T (O)"),0,0,'R');
+		$this->Cell(0,0.25,'Generated '.date("m/d/Y H:i:s T"),0,0,'R');
 	}
 }
 
@@ -46,19 +81,55 @@ $pdf->AddPage();
 $pdf->SetFont('Arial','B',32);
 $pdf->Cell(0,0.75,'Let Me Sleep',"L",1);
 $pdf->SetFont('Arial','B',16);
-$pdf->Cell(0,0.25,'Course Schedule',"L");
+$pdf->Cell(0,0.25,'Course Schedule',"L",1);
 $pdf->SetFont('Arial','B',8);
 $pdf->Cell(0,0.25,'Optimized for night owls',"L");
+$pdf->Image('primary.jpg',2.25,3.75,4);
 
 //pages go here
 generateSched($pdf);
 
-$pdf->Output('F','C:/wamp64/www/letmesleep/latest.pdf');
-$pdf->Output('F','C:/wamp64/www/letmesleep/'.uniqid().'.pdf');
+$pdf->Output('F','C:/wamp64/www/letmesleep/out/latest.pdf');
+$pdf->Output('F','C:/wamp64/www/letmesleep/out/'.uniqid().'.pdf');
 $pdf->Output();
 sendReport();
-
+}
 function generateSched($pdf) {
+	$selected_courses = array();
+	$warnings = array();
+	$token = login();
+	$term = $_GET["term"];
+	$level = $_GET["level"];
+	$time = $_GET["time"];
+	foreach ($_GET["subject"] as $sub) {
+		$found = false;
+		$courses = getData("https://openapi.it.wm.edu/courses/production/v1/opencourses/".$sub."/".$term, "", "GET", $token);
+		$courses = json_decode($courses);
+		foreach ($courses as $course) {
+			if ($course->{'OPEN_CLOSED'} == "OPEN" && $course->{'CRS_DAYTIME'} != "Not Available") {
+				if (str_contains($course->{'CRS_LEVL'}, $level)) {
+					if (explode("-", explode(":", $course->{'CRS_DAYTIME'})[1])[0] >= $time) {
+						$found = true;
+						$selected_courses["$sub"][] = $course;
+					}
+				}
+			}
+		}
+		if (!$found) {
+			$warnings[] = "No Courses Found For ".$sub;
+		}
+	}
+	//var_dump($selected_courses);
+	$pdf->AddPage();
+	//content of schedule goes here
+	$pdf->SetTextColor(255,0,0);
+	$pdf->SetFont('Arial','B',8);
+	foreach ($warnings as $warning) {
+		$pdf->Cell(0,0.25,$warning,0,1);
+	}
+}
+
+function login() {
 	$login = "
 		{
 			\"client_id\": \"tribehacks\",
@@ -67,15 +138,7 @@ function generateSched($pdf) {
 	";
 	$token = getData("https://openapi.it.wm.edu/auth/v1/login", $login);
 	$token = json_decode($token);
-	$token = $token->{'access_token'};
-	$courses = getData("https://openapi.it.wm.edu/courses/development/v1/coursesections/202220", "", "GET", $token);
-	var_dump($courses);
-	$xml = json_decode($courses);
-	die();
-	$json = json_encode($xml);
-	$array = json_decode($json,TRUE);
-	$pdf->AddPage();
-	//content of schedule goes here
+	return $token->{'access_token'};
 }
 
 function getData($url, $body, $type = "POST", $token = "") {
@@ -103,5 +166,14 @@ function getData($url, $body, $type = "POST", $token = "") {
 	curl_close($curl);
 
 	return $html;
+}
+
+function polyfill() {
+	//polyfill
+	if (!function_exists('str_contains')) {
+		function str_contains($haystack, $needle) {
+			return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+		}
+	}
 }
 ?>
