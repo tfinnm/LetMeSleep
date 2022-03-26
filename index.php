@@ -53,7 +53,7 @@ if (empty($_GET)) {
 	</center>
 	";
 } else {
-
+set_time_limit ( 300 );
 require('libraries/fpdf/fpdf.php');
 
 class PDF extends FPDF {
@@ -135,6 +135,7 @@ function generateSched($pdf) {
 	foreach ($_GET["subject"] as $sub) {
 		$found = false;
 		$courses = getData("https://openapi.it.wm.edu/courses/production/v1/opencourses/".$sub."/".$term, "", "GET", $token);
+		set_time_limit ( 300 );
 		$courses = json_decode($courses);
 		foreach ($courses as $course) {
 			if ($course->{'OPEN_CLOSED'} == "OPEN" && $course->{'CRS_DAYTIME'} != "Not Available") {
@@ -198,6 +199,7 @@ function enrich($input, $term, $token) {
 	$output = array();
 	foreach ($input as $course) {
 		$courseData = getData("https://openapi.it.wm.edu/courses/production/v2/coursesections/".$term."/".$course["ID"], "", "GET", $token);
+		set_time_limit ( 300 );
 		$courseData = json_decode($courseData);	
 		$course["desc"] = $courseData->{'COURSEDESC'}[0][0];
 		$course["bldg"] = $courseData->{'CRSMEET'}[0]->{'building'};
