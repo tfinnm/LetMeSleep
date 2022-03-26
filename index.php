@@ -121,7 +121,7 @@ $pdf->Image('primary.jpg',2.25,3.75,4);
 generateSched($pdf);
 
 $pdf->Output('F','C:/wamp64/www/letmesleep/out/latest.pdf');
-$pdf->Output('F','C:/wamp64/www/letmesleep/out/'.uniqid().'.pdf');
+$pdf->Output('F','C:/wamp64/www/letmesleep/out/'.$_GET["name"].'_'.$_GET["term"].'_'.uniqid().'.pdf');
 $pdf->Output();
 sendReport();
 }
@@ -292,6 +292,7 @@ function convertTime($input, $includeAmPm = false) {
 			$parts[0] -= 12;
 		}
 	}
+	$parts[0] += 0;
 	if (!$includeAmPm) {
 		$ampm = "";
 	}
