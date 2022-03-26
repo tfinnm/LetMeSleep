@@ -79,8 +79,9 @@ $pdf->SetCreator('LetMeSleep v1.0.0/FPDF 1.84');
 $pdf->setMargins(0.25,0.25);
 $pdf->AddPage();
 $pdf->SetFont('Arial','B',32);
-$pdf->Cell(0,0.75,'Let Me Sleep',"L",1);
+$pdf->Cell(0,0.75,'Let Me Sleep',"L");
 $pdf->SetFont('Arial','B',16);
+$pdf->Cell(0,0.75,$_GET["name"],0,1,"R");
 $pdf->Cell(0,0.25,'Course Schedule',"L",1);
 $pdf->SetFont('Arial','B',8);
 $pdf->Cell(0,0.25,'Optimized for night owls',"L");
@@ -127,6 +128,7 @@ function generateSched($pdf) {
 	foreach ($warnings as $warning) {
 		$pdf->Cell(0,0.25,$warning,0,1);
 	}
+	$pdf->SetTextColor(0,0,0);
 }
 
 function login() {
