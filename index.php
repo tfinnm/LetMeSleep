@@ -129,6 +129,59 @@ function generateSched($pdf) {
 		$pdf->Cell(0,0.25,$warning,0,1);
 	}
 	$pdf->SetTextColor(0,0,0);
+	$selected = array();
+	foreach ($selected_courses as $sub) {
+		$sc = array();
+		foreach ($sub as $course) {
+			$sc[] = array("Name"=>$course->{'TITLE'}, "ID"=>$course->{'CRN_ID'}, "Subject"=>$course->{'SUBJECT_CODE'}, "Time"=>$course->{'CRS_DAYTIME'}, "Credits"=>$course->{'CREDIT_HRS'}, "Instructor"=>$course->{'INSTRUCTOR'});
+		}
+		$selected[] = $sc;
+	}
+	$selected = selectFinal(null,$selected);
+	outputDay($selected, "Monday", "M", $pdf);
+	outputDay($selected, "Tuesday", "T", $pdf);
+	outputDay($selected, "Wensday", "W", $pdf);
+	outputDay($selected, "Thursday", "R", $pdf);
+	outputDay($selected, "Friday", "F", $pdf);
+}
+
+function selectFinal ($options,$remaining,$selected = array()) {
+	if ($options != null) {
+		$selected[] = $options[0];
+	}
+	if (is_array($remaining) && (count($remaining) > 1)) {
+		$options = $remaining[0];
+		$remaining = array_slice($remaining,1);
+		return selectFinal($options,$remaining,$selected);
+	} elseif ($remaining != null) {
+		$options = $remaining[0];
+		return selectFinal($options,null,$selected);
+	}
+	return $selected;
+}
+
+function outputDay($courses, $dayTitle, $day, $pdf) {
+	$found = false;
+	$pdf->SetFont('Arial','BU',12);
+	$pdf->Cell(0,0.25,"Courses for ".$dayTitle,0,1);
+	$pdf->SetFont('Arial','B',8);
+	$courseStart = array();
+	foreach ($courses as $course) {
+		$courseStart[] = explode("-", explode(":", $course['Time'])[1])[0];
+	}
+	array_multisort($courseStart, SORT_ASC, $courses);
+	foreach ($courses as $course) {
+		$days = explode(":", $course['Time'])[0];
+		if (str_contains($days, $day)) {
+			$found = true;
+			$pdf->Cell(0,0.25,$course['Name']." [".$course['Time']."]",0,1);
+		}
+	}
+	if (!$found) {
+		$pdf->SetTextColor(255,0,0);
+		$pdf->Cell(0,0.25,"No courses scheduled for ".$dayTitle,0,1);
+		$pdf->SetTextColor(0,0,0);
+	}
 }
 
 function login() {
