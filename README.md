@@ -25,8 +25,19 @@ No one likes getting up for an 8am class, so Let Me Sleep helps you by generatin
 ### What Does LetMeSleep Check For?
 
  - [x] Courses Must Be For The Selected Term (ie. Spring 2022)
- - [x] Courses Must Be For A Selected Subject (And All Selected Subjects Have A Course Scheduled, If None Are Available, LetMeSleep Will Warn You)
+ - [x] Courses Must Be For A Selected Subject
+ - [x] All Selected Subjects Have A Course Scheduled (If None Are Available, LetMeSleep Will Warn You)
  - [x] Courses Must Be Open & Have Space Available
  - [x] Courses Must Be For The Correct Level (ie. Graduate or Undergraduate)
  - [x] If Requested By User, Courses Must Not Have Any Pre-Reqs (Enabled/Disabled On The Form)
  - [x] Courses Cannot Overlap With Other Courses That Have Been Scheduled
+ 
+ ### What Information Will I Get Back?
+ 
+ 
+ ### What Options Do I Have?
+ 
+ 
+ ### How Will I Get The Output From LetMeSleep?
+
+LetMeSleep Will Open A PDF Of It's Output In Your Browser That You Can Download Or Print. For Examples Of The Output, [Click Here](https://github.com/tfinnm/LetMeSleep/#sample-outputs)
