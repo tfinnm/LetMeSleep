@@ -1,5 +1,10 @@
 # LetMeSleep
 
+![MIT License](https://img.shields.io/github/license/tfinnm/LetMeSleep)
+![Latest Release](https://img.shields.io/github/v/release/tfinnm/LetMeSleep?include_prereleases)
+![Last Commit](https://img.shields.io/github/last-commit/tfinnm/LetMeSleep)
+![Visits Badge](https://badges.pufler.dev/visits/tfinnm/LetMeSleep)
+
 No one likes getting up for an 8am class, so **LetMeSleep** helps you by generating a William &amp; Mary class schedule that avoids early classes, in turn, letting you sleep.
 
 <img src="https://raw.githubusercontent.com/tfinnm/LetMeSleep/main/bridge.png" alt="W&M Bridge" width="100%"/>
@@ -63,3 +68,19 @@ No one likes getting up for an 8am class, so **LetMeSleep** helps you by generat
  ### Should I Use **LetMeSleep**?
  
  For Actually Making Your Schedule, No, You Probably Shouldn't. **LetMeSleep** Absolutely Works, It Will Generate A Schedule That You Could Actually Turn Around And Register For, However, You Will Most Likely Get A Lot More Out Of College By Registering For Courses Based On What Interests You, Not Based On Some Computer Althorithm. That Said, If You Just Want To Play Around With It Or See What It Thinks You Should've Taken, By All Means, Go For It. If For Some Reason You Actually Do Use **LetMeSleep** To Decide Your Course Schedule, Let Me Know And I'll Give You A Shoutout Right Here.
+ 
+## Confirmed Browsers support
+
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br/>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br/>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br/>Chrome |
+| --------- | --------- | --------- |
+| IE11, Edge| last 10+ versions| last 10+ versions
+ 
+ ### Built With
+ 
+ ![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
+ ![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
+ ![Notepad++](https://img.shields.io/badge/Notepad++-90E59A.svg?style=for-the-badge&logo=notepad%2B%2B&logoColor=black)
+
+### Contributors
+![Contributors Display](https://badges.pufler.dev/contributors/tfinnm/LetMeSleep?size=50&padding=5&bots=true)
+![Sparkline](https://stars.medv.io/tfinnm/LetMeSleep.svg)
