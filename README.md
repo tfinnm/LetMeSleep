@@ -24,7 +24,7 @@ No one likes getting up for an 8am class, so **LetMeSleep** helps you by generat
 
 ### What Does LetMeSleep Check For?
 
- - [x] Courses Must Be For The Selected Term (ie. Spring 2022)
+ - [x] Courses Must Be For The Selected Term (Such As Spring 2022)
  - [x] Courses Must Be For A Selected Subject
  - [x] All Selected Subjects Have A Course Scheduled (If None Are Available, **LetMeSleep** Will Warn You)
  - [x] Courses Must Be Open & Have Space Available
@@ -58,4 +58,8 @@ No one likes getting up for an 8am class, so **LetMeSleep** helps you by generat
 
  ### How Does **LetMeSleep** Work?
  
- **LetMeSleep** is powered by a PHP backend that generates a PDF using FPDF based on data retrieved from William & Mary IT's Open Data API using cURL. The Frontend Is Built In Bootstrap 3 (Javascript/CSS/HTML).
+ **LetMeSleep** is powered by a PHP backend that generates a PDF using FPDF based on data retrieved from William & Mary IT's Open Data API using cURL. The Frontend Is Built In Bootstrap 3 (Javascript/CSS/HTML). **LetMeSleep** is also designed to match the William & Mary Branding Guidelines.
+ 
+ ### Should I Use ***LetMeSleep**?
+ 
+ For Actually Making Your Schedule, No, You Probably Shouldn't. **LetMeSleep** Absolutely Works, It Will Generate A Schedule That You Could Actually Turn Around And Register For, However, You Will Most Likely Get A Lot More Out Of College By Registering For Courses Based On What Interests You, Not Based On Some Computer Althorithm. That Said, If You Just Want To Play Around With It Or See What It Thinks You Should've Taken, By All Means, Go For It. If For Some Reason You Actually Do Use **LetMeSleep** To Decide Your Course Schedule, Let Me Know And I'll Give You A Shoutout Right Here.
