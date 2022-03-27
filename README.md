@@ -1,6 +1,6 @@
 # LetMeSleep
 
-No one likes getting up for an 8am class, so Let Me Sleep helps you by generating a William &amp; Mary class schedule that avoids early classes, in turn, letting you sleep.
+No one likes getting up for an 8am class, so **LetMeSleep** helps you by generating a William &amp; Mary class schedule that avoids early classes, in turn, letting you sleep.
 
 <img src="https://raw.githubusercontent.com/tfinnm/LetMeSleep/main/bridge.png" alt="W&M Bridge" width="100%"/>
 
@@ -26,18 +26,36 @@ No one likes getting up for an 8am class, so Let Me Sleep helps you by generatin
 
  - [x] Courses Must Be For The Selected Term (ie. Spring 2022)
  - [x] Courses Must Be For A Selected Subject
- - [x] All Selected Subjects Have A Course Scheduled (If None Are Available, LetMeSleep Will Warn You)
+ - [x] All Selected Subjects Have A Course Scheduled (If None Are Available, **LetMeSleep** Will Warn You)
  - [x] Courses Must Be Open & Have Space Available
  - [x] Courses Must Be For The Correct Level (ie. Graduate or Undergraduate)
  - [x] If Requested By User, Courses Must Not Have Any Pre-Reqs (Enabled/Disabled On The Form)
  - [x] Courses Cannot Overlap With Other Courses That Have Been Scheduled
  
  ### What Information Will I Get Back?
- 
+
+ - [x] A Suggested Course Schedule Broken Down By Day
+ - [x] Information About Each Suggested Course Including:
+	- [x] Course Description
+	- [X] # of Credit Hours
+	- [x] Time & Place Of The Course
+	- [x] Instructor(s) Of The Course
+	- [x] Course Pre-Reqs (If Applicable)
+	- [x] Course Code
  
  ### What Options Do I Have?
  
+ - [x] **Student Name:** This *Required Text* Field Is Used To Help Identify Schedules Once They Are Downloaded Or Printed
+ - [x] **Term:** This *Required Single-Selection* Field Allows You To Select Which Term To Generate A Schedule For
+ - [x] **Subjects:** This *Required Multi-Select* Field Allows You To Select Which Subjects To Take Courses In
+ - [x] **Level:** This *Required Single-Selection* Field Allows You To Indicate Whether You Are A Graduate or Undergraduate Student
+ - [x] **Start Time:** This *Require Single-Selection* Field Allows You To Pick The ***Earliest*** Time You Are Willing To Go To Class
+ - [x] **Avoid Pre-Reqs:** This *Check-box* Allows You To Indicate Whether Or Not *LetMeSleep* Should Avoid Picking Courses With Pre-Reqs
  
  ### How Will I Get The Output From LetMeSleep?
 
-LetMeSleep Will Open A PDF Of It's Output In Your Browser That You Can Download Or Print. For Examples Of The Output, [Click Here](https://github.com/tfinnm/LetMeSleep/#sample-outputs)
+**LetMeSleep** Will Open A PDF Of It's Output In Your Browser That You Can Download Or Print. For Examples Of The Output, [Click Here](https://github.com/tfinnm/LetMeSleep/#sample-outputs)
+
+ ### How Does **LetMeSleep** Work?
+ 
+ **LetMeSleep** is powered by a PHP backend that generates a PDF using FPDF based on data retrieved from William & Mary IT's Open Data API using cURL. The Frontend Is Built In Bootstrap 3 (Javascript/CSS/HTML).
