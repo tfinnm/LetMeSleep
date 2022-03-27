@@ -22,7 +22,7 @@ No one likes getting up for an 8am class, so **LetMeSleep** helps you by generat
 
 > *Sleep? What's that??* - College Students, Probably.
 
-### What Does LetMeSleep Check For?
+### What Does **LetMeSleep** Check For?
 
  - [x] Courses Must Be For The Selected Term (Such As Spring 2022)
  - [x] Courses Must Be For A Selected Subject
@@ -52,7 +52,7 @@ No one likes getting up for an 8am class, so **LetMeSleep** helps you by generat
  - [x] **Start Time:** This *Require Single-Selection* Field Allows You To Pick The ***Earliest*** Time You Are Willing To Go To Class
  - [x] **Avoid Pre-Reqs:** This *Check-box* Allows You To Indicate Whether Or Not *LetMeSleep* Should Avoid Picking Courses With Pre-Reqs
  
- ### How Will I Get The Output From LetMeSleep?
+ ### How Will I Get The Output From **LetMeSleep**?
 
 **LetMeSleep** Will Open A PDF Of It's Output In Your Browser That You Can Download Or Print. For Examples Of The Output, [Click Here](https://github.com/tfinnm/LetMeSleep/#sample-outputs)
 
@@ -60,6 +60,6 @@ No one likes getting up for an 8am class, so **LetMeSleep** helps you by generat
  
  **LetMeSleep** is powered by a PHP backend that generates a PDF using FPDF based on data retrieved from William & Mary IT's Open Data API using cURL. The Frontend Is Built In Bootstrap 3 (Javascript/CSS/HTML). **LetMeSleep** is also designed to match the William & Mary Branding Guidelines.
  
- ### Should I Use ***LetMeSleep**?
+ ### Should I Use **LetMeSleep**?
  
  For Actually Making Your Schedule, No, You Probably Shouldn't. **LetMeSleep** Absolutely Works, It Will Generate A Schedule That You Could Actually Turn Around And Register For, However, You Will Most Likely Get A Lot More Out Of College By Registering For Courses Based On What Interests You, Not Based On Some Computer Althorithm. That Said, If You Just Want To Play Around With It Or See What It Thinks You Should've Taken, By All Means, Go For It. If For Some Reason You Actually Do Use **LetMeSleep** To Decide Your Course Schedule, Let Me Know And I'll Give You A Shoutout Right Here.
