@@ -69,7 +69,7 @@ No one likes getting up for an 8am class, so **LetMeSleep** helps you by generat
  
  For Actually Making Your Schedule, No, You Probably Shouldn't. **LetMeSleep** Absolutely Works, It Will Generate A Schedule That You Could Actually Turn Around And Register For, However, You Will Most Likely Get A Lot More Out Of College By Registering For Courses Based On What Interests You, Not Based On Some Computer Althorithm. That Said, If You Just Want To Play Around With It Or See What It Thinks You Should've Taken, By All Means, Go For It. If For Some Reason You Actually Do Use **LetMeSleep** To Decide Your Course Schedule, Let Me Know And I'll Give You A Shoutout Right Here.
  
-## Confirmed Browsers support
+## Confirmed Supported Browsers
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br/>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br/>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br/>Chrome |
 | --------- | --------- | --------- |
@@ -83,4 +83,3 @@ No one likes getting up for an 8am class, so **LetMeSleep** helps you by generat
 
 ### Contributors
 ![Contributors Display](https://badges.pufler.dev/contributors/tfinnm/LetMeSleep?size=50&padding=5&bots=true)
-![Sparkline](https://stars.medv.io/tfinnm/LetMeSleep.svg)
