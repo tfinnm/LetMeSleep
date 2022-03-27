@@ -18,4 +18,15 @@ No one likes getting up for an 8am class, so Let Me Sleep helps you by generatin
 
  - [View All Sample Outputs](https://github.com/tfinnm/LetMeSleep/tree/main/out)
 
+## Features
+
 > *Sleep? What's that??* - College Students, Probably.
+
+### What Does LetMeSleep Check For?
+
+ - [x] Courses Must Be For The Selected Term (ie. Spring 2022)
+ - [x] Courses Must Be For A Selected Subject (And All Selected Subjects Have A Course Scheduled, If None Are Available, LetMeSleep Will Warn You)
+ - [x] Courses Must Be Open & Have Space Available
+ - [x] Courses Must Be For The Correct Level (ie. Graduate or Undergraduate)
+ - [x] If Requested By User, Courses Must Not Have Any Pre-Reqs (Enabled/Disabled On The Form)
+ - [x] Courses Cannot Overlap With Other Courses That Have Been Scheduled
